@@ -15,6 +15,7 @@ class InternetMediaType extends Enum
     const EPUB = 'application/epub+zip';
     const PDF = 'application/pdf';
     const MD = 'text/markdown';
+    const XHTML = 'application/xhtml+xml';
 
     public function __toString()
     {
