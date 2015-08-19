@@ -57,6 +57,14 @@ class IntegerSet implements Iterator
         }
     }
 
+    /**
+     * @return array All items in the set
+     */
+    public function getItems()
+    {
+        return $this->items;
+    }
+
     public function __toString()
     {
         $result = '';
