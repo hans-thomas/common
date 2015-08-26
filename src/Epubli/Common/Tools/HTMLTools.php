@@ -8,4 +8,9 @@ class HTMLTools
     {
         return strtr($html, include('htmlEntityMap.php'));
     }
+
+    public static function isBlockLevelElement($name)
+    {
+        return in_array($name, include('htmlBlockLevelElements.php'));
+    }
 }
