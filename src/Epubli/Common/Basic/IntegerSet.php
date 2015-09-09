@@ -62,7 +62,7 @@ class IntegerSet implements Iterator
      */
     public function getItems()
     {
-        return $this->items;
+        return array_values($this->items);
     }
 
     public function __toString()
