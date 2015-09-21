@@ -1,0 +1,22 @@
+{
+  "name": "epubli/common",
+  "type": "library",
+  "description": "Collection of commonly used classes.",
+  "keywords": ["Epubli", "PHP", "common code", "helpers", "tools", "utilities"],
+  "homepage": "https://bitbucket.org/epubli/common",
+  "license": "proprietary",
+  "authors": [
+    {
+      "name": "Epubli developers",
+      "email": "devs@epubli.com"
+    }
+  ],
+  "require": {
+    "php": ">=5.4.0"
+  },
+  "autoload": {
+    "psr-0": {
+      "Epubli\\Epub": "src/"
+    }
+  }
+}
