@@ -16,7 +16,8 @@
   },
   "autoload": {
     "psr-0": {
-      "Epubli\\Common": "src/"
+      "Epubli\\Common": "src/",
+      "Epubli\\Exception": "src/"
     }
   }
 }
