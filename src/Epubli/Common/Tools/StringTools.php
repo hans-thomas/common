@@ -28,4 +28,37 @@ class StringTools
     {
         return preg_replace('/[[:^print:]]/', '_', $text);
     }
+
+    /**
+     * Determine whether one string starts with another. 
+     * @param string $haystack String to examine.
+     * @param string $needle String to find.
+     * @return bool Whether $haystack starts with $needle.
+     */
+    public static function startsWith($haystack, $needle)
+    {
+        return '' === $needle || strpos($haystack, $needle) === 0;
+    }
+
+    /**
+     * Determine whether one string ends with another.
+     * @param string $haystack String to examine.
+     * @param string $needle String to find.
+     * @return bool Whether $haystack ends with $needle.
+     */
+    public static function endsWith($haystack, $needle)
+    {
+        return '' === $needle || strrpos($haystack, $needle) === strlen($haystack) - strlen($needle);
+    }
+
+    /**
+     * Determine whether one string contains another.
+     * @param string $haystack String to examine.
+     * @param string $needle String to find.
+     * @return bool Whether $haystack contains $needle.
+     */
+    public static function contains($haystack, $needle)
+    {
+        return '' === $needle || strpos($haystack, $needle) !== false;
+    }
 }
