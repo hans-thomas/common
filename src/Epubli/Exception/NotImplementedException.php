@@ -6,8 +6,13 @@ use Exception;
 
 class NotImplementedException extends Exception
 {
-    public function __construct($message = "", $code = 0, Exception $previous = null)
+    /**
+     * @param string $feature The feature that is not implemented.
+     * @param int $code
+     * @param Exception|null $previous
+     */
+    public function __construct($feature, $code = 0, Exception $previous = null)
     {
-        parent::__construct("$message is not yet implemented!", $code, $previous);
+        parent::__construct("$feature is not yet implemented!", $code, $previous);
     }
 }
