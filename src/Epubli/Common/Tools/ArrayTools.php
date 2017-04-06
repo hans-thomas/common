@@ -1,4 +1,5 @@
 <?php
+namespace Epubli\Common\Tools;
 /**
  * @author Timor Kodal <t.kodal@epubli.com>
  */
@@ -44,7 +45,7 @@ class ArrayTools {
      * @param boolean $deep
      * @return array
      */
-    public static function groupByKeys($arr, $groupKeys, $deep = false) {
+    public static function groupByKeys($arr, $groupKeys, $deep = true) {
         $out = Array();
         if (is_array($groupKeys)) {
             foreach($arr as $k=>$v) {
@@ -177,7 +178,7 @@ class ArrayTools {
 
                 // push match on top of matches-array
                 array_unshift(
-                    &$matches,
+                    $matches,
                     Array (
                         "key"=>$key,
                         "value"=>$value,
@@ -215,4 +216,99 @@ class ArrayTools {
      return $array;
    }
 
+    /**
+     * use a given key to extract all respective values
+     *
+     * @param array $array
+     * @param string $key
+     * @return array
+     */
+   public static function extractValues(&$array, $key, $value = null) {
+       if (is_null($value)) {
+           $transform = function ($item) use ($key) {
+               return $item[$key];
+           };
+           return array_map($transform, $array);
+       } else {
+           foreach($array as $v) {
+               if (isset($v[$key])) {
+                   $grouped[$v[$key]] = isset($v[$value])?$v[$value]:null;
+               }
+           }
+           return $grouped;
+       }
+
+   }
+
+    /**
+     * render the contents of an array as a csv
+     *
+     * @param array $data
+     * @param bool|array $fieldNames
+     * @param string $delimiter
+     * @param string $enclosure
+     * @param string $terminator
+     * @return string
+     */
+   public static function toCsv($data, $fieldNames = true, $delimiter = ',', $enclosure = '"', $terminator = "\n") {
+        $csvOutput = '';
+        if ($fieldNames) {
+            if (true === $fieldNames) {
+                $firstRow = array_shift($data);
+                if (is_array($firstRow)) {
+                    $firstRow = array_values($firstRow);
+                }
+            } else if (is_array($fieldNames)) {
+                $firstRow = array_values($fieldNames);
+            }
+            if (is_array($firstRow) && !empty($firstRow)) {
+                foreach ($firstRow as $field) {
+                    $csvOutput .= $field . $delimiter;
+                }
+                $csvOutput = substr($csvOutput,0,-1) . $terminator;
+            }
+        }
+        foreach($data as $row=>$fields) {
+            if (!is_array($fields)) {
+                $fields = [$row, $fields];
+            }
+            foreach ($fields as $value) {
+                if (is_numeric($value)) {
+                    $csvOutput .= $value . $delimiter;
+                } else {
+                    $csvOutput .= $enclosure . $value . $enclosure . $delimiter;
+                }
+            }
+            $csvOutput = substr($csvOutput,0,-1) . $terminator;
+        }
+        return $csvOutput;
+   }
+
+    /**
+     * render the contents of an array as hierarchical tree string
+     * @param array $data
+     * @param string $terminator
+     * @param string $indentation
+     * @param int $indentationLimit
+     * @return string
+     */
+   public static function toText($data, $terminator = "\n", $indentation = '  ', $indentationLimit = null) {
+        $textOut = '';
+        $temp = function($data, $indent = 0) use ($textOut, $terminator, $indentation, &$temp, $indentationLimit) {
+            foreach($data as $key=>$value) {
+                $textOut .= str_repeat($indentation,$indent);
+                if (is_array($value)) {
+                    if (!isset($indentationLimit) || $indent <= $indentationLimit) {
+                        $textOut .= "$key :" . $terminator . $temp($value, $indent + 1);
+                    } else {
+                        $textOut .= "$key : [...]".$terminator;
+                    }
+                } else {
+                    $textOut .= "$key : $value".$terminator;
+                }
+            }
+            return $textOut;
+        };
+        return $temp($data);
+   }
 }
