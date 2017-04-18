@@ -221,18 +221,31 @@ class ArrayTools {
      *
      * @param array $array
      * @param string $key
+     * @param array|string $values
      * @return array
      */
-   public static function extractValues(&$array, $key, $value = null) {
-       if (is_null($value)) {
+   public static function extractValues(&$array, $key, $values = null) {
+       if (is_null($values)) {
+           /* if $values is empty, return only a flat array with values */
            $transform = function ($item) use ($key) {
                return $item[$key];
            };
            return array_map($transform, $array);
+       } else if (is_array($values)) {
+           /* if $values contains an array, return an array containing all values specified by $values */
+           foreach($values as $value) {
+               foreach ($array as $v) {
+                   if (isset($v[$key])) {
+                       $grouped[$v[$key]][$value] = isset($v[$value]) ? $v[$value] : null;
+                   }
+               }
+           }
+           return $grouped;
        } else {
+           /* if $values contains a string, return an array with the specified key - values */
            foreach($array as $v) {
                if (isset($v[$key])) {
-                   $grouped[$v[$key]] = isset($v[$value])?$v[$value]:null;
+                   $grouped[$v[$key]] = isset($v[$values])?$v[$values]:null;
                }
            }
            return $grouped;
