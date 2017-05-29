@@ -303,20 +303,32 @@ class ArrayTools {
      * @param string $terminator
      * @param string $indentation
      * @param int $indentationLimit
+	 * @param mixed $textLengthLimit
+	 * @param string $ellipsis
      * @return string
      */
-   public static function toText($data, $terminator = "\n", $indentation = '  ', $indentationLimit = null) {
+   public static function toText($data, $terminator = "\n", $indentation = '  ', $indentationLimit = null, $textLengthLimit = null, $ellipsis = '[...]') {
         $textOut = '';
-        $temp = function($data, $indent = 0) use ($textOut, $terminator, $indentation, &$temp, $indentationLimit) {
+        $temp = function($data, $indent = 0) use ($textOut, $terminator, $indentation, &$temp, $indentationLimit, $textLengthLimit, $ellipsis) {
+        	if (is_array($textLengthLimit)) {
+        		$textLengthLimitStart = reset($textLengthLimit);
+        		$textLengthLimitEnd = end($textLengthLimit);
+			} else {
+        		$textLengthLimitStart = $textLengthLimit;
+        		$textLengthLimitEnd = 0;
+			}
             foreach($data as $key=>$value) {
                 $textOut .= str_repeat($indentation,$indent);
                 if (is_array($value)) {
                     if (!isset($indentationLimit) || $indent <= $indentationLimit) {
                         $textOut .= "$key :" . $terminator . $temp($value, $indent + 1);
                     } else {
-                        $textOut .= "$key : [...]".$terminator;
+                        $textOut .= "$key : ".$ellipsis.$terminator;
                     }
                 } else {
+                	if (strlen($value)>$textLengthLimit) {
+                		$value = substr($value,0,$textLengthLimitStart).$ellipsis.($textLengthLimitEnd > 0 ? substr($value, -$textLengthLimitEnd):'');
+					}
                     $textOut .= "$key : $value".$terminator;
                 }
             }
