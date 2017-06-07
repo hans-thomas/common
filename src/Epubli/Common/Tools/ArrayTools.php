@@ -326,7 +326,7 @@ class ArrayTools {
                         $textOut .= "$key : ".$ellipsis.$terminator;
                     }
                 } else {
-                	if (strlen($value)>$textLengthLimit) {
+                	if (isset($textLengthLimit) && (strlen($value)>$textLengthLimit)) {
                 		$value = substr($value,0,$textLengthLimitStart).$ellipsis.($textLengthLimitEnd > 0 ? substr($value, -$textLengthLimitEnd):'');
 					}
                     $textOut .= "$key : $value".$terminator;
