@@ -1,16 +1,18 @@
 <?php
+
 namespace Epubli\Common\Tools;
+
 /**
  * @author Timor Kodal <t.kodal@epubli.com>
  */
-class ArrayTools {
-
-    const SORT_ASC      = 0;
-    const SORT_DEFAULT  = 0;
-    const SORT_DESC     = 1;
-    const SORT_NOCASE   = 2;
-    const SORT_TRIM     = 4;
-    const SORT_NATURAL  = 8;
+class ArrayTools
+{
+    const SORT_ASC = 0;
+    const SORT_DEFAULT = 0;
+    const SORT_DESC = 1;
+    const SORT_NOCASE = 2;
+    const SORT_TRIM = 4;
+    const SORT_NATURAL = 8;
 
     public static $sortKey;
     public static $sortOptions;
@@ -24,19 +26,20 @@ class ArrayTools {
      * @param boolean $deep
      * @return int
      */
-
-    private static function recursive($source, &$target, &$keys, $deep = false) {
+    private static function recursive($source, &$target, &$keys, $deep = false)
+    {
         $group = array_pop($keys);
         if ($group) {
-            self::recursive($source,$target[$source[$group]],$keys,$deep);
+            self::recursive($source, $target[$source[$group]], $keys, $deep);
         } else {
             if ($deep) {
-                $target[]=$source;
+                $target[] = $source;
             } else {
-                $target=$source;
+                $target = $source;
             }
         }
     }
+
     /**
      * Uses a given string ($groupKeys) to group an array ($arr)
      *
@@ -45,24 +48,27 @@ class ArrayTools {
      * @param boolean $deep
      * @return array
      */
-    public static function groupByKeys($arr, $groupKeys, $deep = true) {
+    public static function groupByKeys($arr, $groupKeys, $deep = true)
+    {
         $out = Array();
         if (is_array($groupKeys)) {
-            foreach($arr as $k=>$v) {
+            foreach ($arr as $k => $v) {
                 $grp = array_reverse($groupKeys);
-                self::recursive($v,$out,$grp,$deep);
+                self::recursive($v, $out, $grp, $deep);
             }
         } else {
-            foreach($arr as $k=>$v) {
+            foreach ($arr as $k => $v) {
                 if ($deep) {
-                    $out[$v[$groupKeys]][]=$v;
+                    $out[$v[$groupKeys]][] = $v;
                 } else {
-                    $out[$v[$groupKeys]]=$v;
+                    $out[$v[$groupKeys]] = $v;
                 }
             }
         }
+
         return $out;
     }
+
     /**
      * private comparison-method using sortKey and self::$sortOptions
      *
@@ -70,16 +76,19 @@ class ArrayTools {
      * @param array $b
      * @return int
      */
-    private static function sorter($a, $b) {
-        if (!array_key_exists(self::$sortKey,$a) || !array_key_exists(self::$sortKey,$b))
+    private static function sorter($a, $b)
+    {
+        if (!array_key_exists(self::$sortKey, $a) || !array_key_exists(self::$sortKey, $b)) {
             return 0;
+        }
         $a = $a[self::$sortKey];
         $b = $b[self::$sortKey];
-        self::transform($a,$b,self::$sortOptions);
-        if (self::$sortOptions & self::SORT_NATURAL)
-            return (strnatcmp($a,$b));
-        else
-            return ($a == $b) ? 0 : ($a < $b) ? -1:1;
+        self::transform($a, $b, self::$sortOptions);
+        if (self::$sortOptions & self::SORT_NATURAL) {
+            return (strnatcmp($a, $b));
+        } else {
+            return ($a == $b) ? 0 : ($a < $b) ? -1 : 1;
+        }
     }
 
     /**
@@ -90,9 +99,11 @@ class ArrayTools {
      * @param int $options
      * @return void
      */
-    public static function transform(&$a,&$b,$options = self::SORT_DEFAULT) {
-        if ($options == self::SORT_DEFAULT)
+    public static function transform(&$a, &$b, $options = self::SORT_DEFAULT)
+    {
+        if ($options == self::SORT_DEFAULT) {
             return;
+        }
         if ($options & self::SORT_NOCASE) {
             $a = strtolower($a);
             $b = strtolower($b);
@@ -115,18 +126,24 @@ class ArrayTools {
      * @return array
      */
 
-    public static function setEmptyValues(array $data, array $keys = null) {
-        foreach ($data as $column=>$value) {
+    public static function setEmptyValues(array $data, array $keys = null)
+    {
+        foreach ($data as $column => $value) {
             if (empty($value)) {
                 if (!isset($keys)) {
                     unset($data[$column]);
-                } else if (in_array($column,$keys)) {
-                    unset($data[$column]);
-                } else if (array_key_exists($column,$keys)) {
-                    $data[$column] = $keys[$column];
+                } else {
+                    if (in_array($column, $keys)) {
+                        unset($data[$column]);
+                    } else {
+                        if (array_key_exists($column, $keys)) {
+                            $data[$column] = $keys[$column];
+                        }
+                    }
                 }
             }
         }
+
         return $data;
     }
 
@@ -137,41 +154,40 @@ class ArrayTools {
      * @param string $regExpPattern
      * @return array
      */
-    public static function regExpMatches(array $array, $regExpPattern) {
+    public static function regExpMatches(array $array, $regExpPattern)
+    {
         $results = Array();
-        foreach($array as $entry) {
-            preg_match($regExpPattern,$entry,$m);
-            if (array_key_exists(0,$m)) {
+        foreach ($array as $entry) {
+            preg_match($regExpPattern, $entry, $m);
+            if (array_key_exists(0, $m)) {
                 $results[] = $m;
             }
         }
+
         return $results;
     }
 
     /**
-     *
      * @param string $target
      * @param array $scope
      * @param int $amount
      * @param int $threshold
      * @return array
      */
-
-    public static function matchText( $needle, array $haystack, $amount=1, $threshold=50 ) {
-
+    public static function matchText($needle, array $haystack, $amount = 1, $threshold = 50)
+    {
         $best = 0;
         $matches = array();
 
         /*  replace underscores, dashes, tabs and linefeeds with whitechars, remove consequent whitechars */
-        $needle = strtolower(trim(preg_replace('/[ \-\t\n\r]+/',' ',$needle)));
+        $needle = strtolower(trim(preg_replace('/[ \-\t\n\r]+/', ' ', $needle)));
 
-        foreach($haystack as $key=>$value)
-        {
+        foreach ($haystack as $key => $value) {
             // match value with target
-            similar_text( $needle, strtolower(trim(preg_replace('/[ \-\t\n\r]+/',' ',$value))), $percent);
+            similar_text($needle, strtolower(trim(preg_replace('/[ \-\t\n\r]+/', ' ', $value))), $percent);
 
             // only consider value, if result is better than actual best result and above threshold
-            if ($percent >= $best && $percent >= $threshold ) {
+            if ($percent >= $best && $percent >= $threshold) {
 
                 // update actual best result
                 $best = $percent;
@@ -179,10 +195,10 @@ class ArrayTools {
                 // push match on top of matches-array
                 array_unshift(
                     $matches,
-                    Array (
-                        "key"=>$key,
-                        "value"=>$value,
-                        "result"=>round($percent,2)
+                    Array(
+                        "key" => $key,
+                        "value" => $value,
+                        "result" => round($percent, 2)
                     )
                 );
             }
@@ -192,7 +208,7 @@ class ArrayTools {
         }
 
         // return requested amount of matches
-        return array_slice( $matches, 0, $amount );
+        return array_slice($matches, 0, $amount);
     }
 
     /**
@@ -204,17 +220,21 @@ class ArrayTools {
      * @param int $sortOptions
      * @return array
      */
-   public static function sortByKey(&$array, $sortKey, $sortOptions = self::SORT_ASC) {
-     usort($array, function($cmp_a, $cmp_b) use ($sortKey,$sortOptions) {
-       if (!array_key_exists($sortKey,$cmp_a) || !array_key_exists($sortKey,$cmp_b))
-           return 0;
-       $a = $cmp_a[$sortKey];
-       $b = $cmp_b[$sortKey];
-       self::transform($a,$b,$sortOptions);
-       return ($sortOptions & self::SORT_NATURAL)?(strnatcmp($a,$b)):(($a == $b) ? 0 : ($a < $b) ? -1:1);
-     });
-     return $array;
-   }
+    public static function sortByKey(&$array, $sortKey, $sortOptions = self::SORT_ASC)
+    {
+        usort($array, function ($cmp_a, $cmp_b) use ($sortKey, $sortOptions) {
+            if (!array_key_exists($sortKey, $cmp_a) || !array_key_exists($sortKey, $cmp_b)) {
+                return 0;
+            }
+            $a = $cmp_a[$sortKey];
+            $b = $cmp_b[$sortKey];
+            self::transform($a, $b, $sortOptions);
+
+            return ($sortOptions & self::SORT_NATURAL) ? (strnatcmp($a, $b)) : (($a == $b) ? 0 : ($a < $b) ? -1 : 1);
+        });
+
+        return $array;
+    }
 
     /**
      * use a given key to extract all respective values
@@ -224,34 +244,39 @@ class ArrayTools {
      * @param array|string $values
      * @return array
      */
-   public static function extractValues(&$array, $key, $values = null) {
-       if (is_null($values)) {
-           /* if $values is empty, return only a flat array with values */
-           $transform = function ($item) use ($key) {
-               return $item[$key];
-           };
-           return array_map($transform, $array);
-       } else if (is_array($values)) {
-           /* if $values contains an array, return an array containing all values specified by $values */
-           foreach($values as $value) {
-               foreach ($array as $v) {
-                   if (isset($v[$key])) {
-                       $grouped[$v[$key]][$value] = isset($v[$value]) ? $v[$value] : null;
-                   }
-               }
-           }
-           return $grouped;
-       } else {
-           /* if $values contains a string, return an array with the specified key - values */
-           foreach($array as $v) {
-               if (isset($v[$key])) {
-                   $grouped[$v[$key]] = isset($v[$values])?$v[$values]:null;
-               }
-           }
-           return $grouped;
-       }
+    public static function extractValues(&$array, $key, $values = null)
+    {
+        if (is_null($values)) {
+            /* if $values is empty, return only a flat array with values */
+            $transform = function ($item) use ($key) {
+                return $item[$key];
+            };
 
-   }
+            return array_map($transform, $array);
+        } else {
+            if (is_array($values)) {
+                /* if $values contains an array, return an array containing all values specified by $values */
+                foreach ($values as $value) {
+                    foreach ($array as $v) {
+                        if (isset($v[$key])) {
+                            $grouped[$v[$key]][$value] = isset($v[$value]) ? $v[$value] : null;
+                        }
+                    }
+                }
+
+                return $grouped;
+            } else {
+                /* if $values contains a string, return an array with the specified key - values */
+                foreach ($array as $v) {
+                    if (isset($v[$key])) {
+                        $grouped[$v[$key]] = isset($v[$values]) ? $v[$values] : null;
+                    }
+                }
+
+                return $grouped;
+            }
+        }
+    }
 
     /**
      * render the contents of an array as a csv
@@ -263,7 +288,8 @@ class ArrayTools {
      * @param string $terminator
      * @return string
      */
-   public static function toCsv($data, $fieldNames = true, $delimiter = ',', $enclosure = '"', $terminator = "\n") {
+    public static function toCsv($data, $fieldNames = true, $delimiter = ',', $enclosure = '"', $terminator = "\n")
+    {
         $csvOutput = '';
         if ($fieldNames) {
             if (true === $fieldNames) {
@@ -271,17 +297,19 @@ class ArrayTools {
                 if (is_array($firstRow)) {
                     $firstRow = array_values($firstRow);
                 }
-            } else if (is_array($fieldNames)) {
-                $firstRow = array_values($fieldNames);
+            } else {
+                if (is_array($fieldNames)) {
+                    $firstRow = array_values($fieldNames);
+                }
             }
             if (is_array($firstRow) && !empty($firstRow)) {
                 foreach ($firstRow as $field) {
                     $csvOutput .= $field . $delimiter;
                 }
-                $csvOutput = substr($csvOutput,0,-1) . $terminator;
+                $csvOutput = substr($csvOutput, 0, -1) . $terminator;
             }
         }
-        foreach($data as $row=>$fields) {
+        foreach ($data as $row => $fields) {
             if (!is_array($fields)) {
                 $fields = [$row, $fields];
             }
@@ -292,10 +320,11 @@ class ArrayTools {
                     $csvOutput .= $enclosure . $value . $enclosure . $delimiter;
                 }
             }
-            $csvOutput = substr($csvOutput,0,-1) . $terminator;
+            $csvOutput = substr($csvOutput, 0, -1) . $terminator;
         }
+
         return $csvOutput;
-   }
+    }
 
     /**
      * render the contents of an array as hierarchical tree string
@@ -303,37 +332,56 @@ class ArrayTools {
      * @param string $terminator
      * @param string $indentation
      * @param int $indentationLimit
-	 * @param mixed $textLengthLimit
-	 * @param string $ellipsis
+     * @param mixed $textLengthLimit
+     * @param string $ellipsis
      * @return string
      */
-   public static function toText($data, $terminator = "\n", $indentation = '  ', $indentationLimit = null, $textLengthLimit = null, $ellipsis = '[...]') {
+    public static function toText(
+        $data,
+        $terminator = "\n",
+        $indentation = '  ',
+        $indentationLimit = null,
+        $textLengthLimit = null,
+        $ellipsis = '[...]'
+    ) {
         $textOut = '';
-        $temp = function($data, $indent = 0) use ($textOut, $terminator, $indentation, &$temp, $indentationLimit, $textLengthLimit, $ellipsis) {
-        	if (is_array($textLengthLimit)) {
-        		$textLengthLimitStart = reset($textLengthLimit);
-        		$textLengthLimitEnd = end($textLengthLimit);
-			} else {
-        		$textLengthLimitStart = $textLengthLimit;
-        		$textLengthLimitEnd = 0;
-			}
-            foreach($data as $key=>$value) {
-                $textOut .= str_repeat($indentation,$indent);
+        $temp = function ($data, $indent = 0) use (
+            $textOut,
+            $terminator,
+            $indentation,
+            &$temp,
+            $indentationLimit,
+            $textLengthLimit,
+            $ellipsis
+        ) {
+            if (is_array($textLengthLimit)) {
+                $textLengthLimitStart = reset($textLengthLimit);
+                $textLengthLimitEnd = end($textLengthLimit);
+            } else {
+                $textLengthLimitStart = $textLengthLimit;
+                $textLengthLimitEnd = 0;
+            }
+            foreach ($data as $key => $value) {
+                $textOut .= str_repeat($indentation, $indent);
                 if (is_array($value)) {
                     if (!isset($indentationLimit) || $indent <= $indentationLimit) {
                         $textOut .= "$key :" . $terminator . $temp($value, $indent + 1);
                     } else {
-                        $textOut .= "$key : ".$ellipsis.$terminator;
+                        $textOut .= "$key : " . $ellipsis . $terminator;
                     }
                 } else {
-                	if (isset($textLengthLimit) && (strlen($value)>$textLengthLimit)) {
-                		$value = substr($value,0,$textLengthLimitStart).$ellipsis.($textLengthLimitEnd > 0 ? substr($value, -$textLengthLimitEnd):'');
-					}
-                    $textOut .= "$key : $value".$terminator;
+                    if (isset($textLengthLimit) && (strlen($value) > $textLengthLimit)) {
+                        $value = substr($value, 0,
+                                $textLengthLimitStart) . $ellipsis . ($textLengthLimitEnd > 0 ? substr($value,
+                                -$textLengthLimitEnd) : '');
+                    }
+                    $textOut .= "$key : $value" . $terminator;
                 }
             }
+
             return $textOut;
         };
+
         return $temp($data);
-   }
+    }
 }
