@@ -63,6 +63,88 @@ class StringTools
     }
 
     /**
+     * Split a text into words.
+     * @param string $text The original text
+     * @return array The text split into words.
+     */
+    public static function splitIntoWords($text)
+    {
+        // Prefix any sequence of capital letters with a space and replace any sequence of non-letters with one space.
+        $normalized = preg_replace(['/\p{Lu}+/u', '/\P{L}+/u'], [' \0', ' '], $text);
+
+        // Split into single words.
+        return array_filter(explode(' ', $normalized));
+    }
+
+    /**
+     * Convert a string to Snake_case.
+     * @param string $text The original text
+     * @return string The re-formatted text.
+     */
+    public static function toSnakeCase($text)
+    {
+        $words = self::splitIntoWords($text);
+
+        return implode('_', $words);
+    }
+
+    /**
+     * Convert a string to lower_snake_case.
+     * @param string $text The original text
+     * @return string The re-formatted text.
+     */
+    public static function toLowerSnakeCase($text)
+    {
+        return mb_strtolower(self::toSnakeCase($text));
+    }
+
+    /**
+     * Convert a string to UPPER_SNAKE_CASE.
+     * @param string $text The original text
+     * @return string The re-formatted text.
+     */
+    public static function toUpperSnakeCase($text)
+    {
+        return mb_strtoupper(self::toSnakeCase($text));
+    }
+
+    /**
+     * Convert a string to CamelCase.
+     * @param string $text The original text
+     * @param bool $lower Whether to output lowerCamelCase
+     * @return string The re-formatted text.
+     */
+    public static function toCamelCase($text, $lower = false)
+    {
+        $words = self::splitIntoWords($text);
+        $titleCasedWords = array_map(function ($word, $lower = false) {
+            return mb_convert_case($word, $lower ? MB_CASE_LOWER : MB_CASE_TITLE);
+        }, $words, [$lower]);
+
+        return implode('', $titleCasedWords);
+    }
+
+    /**
+     * Convert a string to lowerCamelCase.
+     * @param string $text The original text
+     * @return string The re-formatted text.
+     */
+    public static function toLowerCamelCase($text)
+    {
+        return self::toCamelCase($text, true);
+    }
+
+    /**
+     * Convert a string to UpperCamelCase.
+     * @param string $text The original text
+     * @return string The re-formatted text.
+     */
+    public static function toUpperCamelCase($text)
+    {
+        return self::toCamelCase($text, false);
+    }
+
+    /**
      * @deprecated: Use UnitTools::humanReadableSeconds instead.
      */
     public static function humanReadableSeconds($value, $digits = 2, $fullName = false)
