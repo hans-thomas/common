@@ -279,6 +279,22 @@ class ArrayTools
     }
 
     /**
+     * @param array $data
+     * @param array|string $route
+     * @return array
+     */
+    public static function arrayRoute($data, $route)
+    {
+        if (!is_array($route)) {
+            $route = explode(".",$route);
+        }
+        foreach($route as $key) {
+            $data = $data[$key];
+        }
+        return $data;
+    }
+
+    /**
      * render the contents of an array as a csv
      *
      * @param array $data
