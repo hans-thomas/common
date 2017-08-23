@@ -17,6 +17,19 @@ class ArrayTools
     public static $sortKey;
     public static $sortOptions;
 
+    public static function distinctMerge(array &$array1, array &$array2)
+    {
+        $merged = $array1;
+        foreach ($array2 as $key => &$value) {
+            if (is_array($value) && isset ($merged [$key]) && is_array($merged [$key])) {
+                $merged [$key] = self::distinctMerge($merged [$key], $value);
+            } else {
+                $merged [$key] = $value;
+            }
+        }
+        return $merged;
+    }
+
     /**
      * private grouping-method called by groupByKeys()
      *
@@ -286,9 +299,9 @@ class ArrayTools
     public static function arrayRoute($data, $route)
     {
         if (!is_array($route)) {
-            $route = explode(".",$route);
+            $route = explode(".", $route);
         }
-        foreach($route as $key) {
+        foreach ($route as $key) {
             $data = $data[$key];
         }
         return $data;
@@ -359,7 +372,8 @@ class ArrayTools
         $indentationLimit = null,
         $textLengthLimit = null,
         $ellipsis = '[...]'
-    ) {
+    )
+    {
         $textOut = '';
         $temp = function ($data, $indent = 0) use (
             $textOut,
