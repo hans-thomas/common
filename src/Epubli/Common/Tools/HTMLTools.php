@@ -4,16 +4,58 @@ namespace Epubli\Common\Tools;
 
 class HTMLTools
 {
+    /**
+     * @param $html
+     * @return string
+     */
     public static function convertEntitiesNamedToNumeric($html)
     {
         return strtr($html, include('htmlEntityMap.php'));
     }
 
+    /**
+     * @param $name
+     * @return bool
+     */
     public static function isBlockLevelElement($name)
     {
         return in_array($name, include('htmlBlockLevelElements.php'));
     }
 
+    /**
+     * performs a tag-aware truncation of (html-) strings, preserving tag integrity
+     * @param array|string $html
+     * @param int|string $length
+     * @return bool|string
+     */
+    public static function truncate($html, $length = "20%")
+    {
+        $htmls = is_array($html) ? $html : [$html];
+        foreach ($htmls as &$htmlString) {
+            if (is_string($length)) {
+                $length = trim($length);
+                /* interpret percentage value */
+                if (substr($length,-1)=='%') {
+                    $length = strlen($htmlString)*substr($length,0,-1)/100;
+                }
+            }
+            $htmlString = substr($htmlString, 0, $length);
+            /* eliminate trailing truncated tag fragment if present */
+            $htmlString = preg_replace('/<[^>]*$/is','',$htmlString);
+        }
+
+        return is_array($html) ? $htmls : array_pop($htmls);
+    }
+
+    /**
+     * strips all occurring html tags from $html (which can either be a string or an array of strings),
+     * preserving all content enclosed by all tags in $keep and
+     * dumping the content residing in all tags listed in $drop
+     * @param array|string $html
+     * @param array $keep
+     * @param array $drop
+     * @return array|string
+     */
     public static function stripHtmlTags(
         $html,
         $keep =
@@ -22,28 +64,31 @@ class HTMLTools
         ['head','style']
     )
     {
-        foreach($drop as $dumpTag) {
-            $html = preg_replace("/<$dumpTag.*$dumpTag>/is","\n",$html);
-        }
-        $html = preg_replace("/[\n\r ]{2,}/i","\n",$html);
-        $html = preg_replace("/[\n|\r]/i",'<br />',$html);
-
-        /* @TODO: remove style tags and only keep body content (drop head) */
-        $tempFunc = function($matches) use ($keep) {
-            $htmlNode = "<" . $matches[1] . ">" . strip_tags($matches[2]) . "</" . $matches[1] . ">";
-            if (in_array($matches[1],$keep)) {
-                return " ".$htmlNode." ";
-            } else {
-                return false;
+        $htmls = is_array($html) ? $html : [$html];
+        foreach ($htmls as &$htmlString) {
+            foreach ($drop as $dumpTag) {
+                $htmlString = preg_replace("/<$dumpTag.*$dumpTag>/is", "\n", $htmlString);
             }
-        };
+            $htmlString = preg_replace("/[\n\r ]{2,}/i", "\n", $htmlString);
+            $htmlString = preg_replace("/[\n|\r]/i", '<br />', $htmlString);
 
-        $allowedTags = implode(array_values($keep),"|");
-        $regExp = '@<('.$allowedTags.')[^>]*?>(.*?)<\/\1>@i';
-        $strippedHtml = preg_replace_callback($regExp,$tempFunc,$html);
+            /* @TODO: remove style tags and only keep body content (drop head) */
+            $tempFunc = function ($matches) use ($keep) {
+                $htmlNode = "<" . $matches[1] . ">" . strip_tags($matches[2]) . "</" . $matches[1] . ">";
+                if (in_array($matches[1], $keep)) {
+                    return " " . $htmlNode . " ";
+                } else {
+                    return "";
+                }
+            };
 
-        $strippedHtml = strip_tags($strippedHtml,"<".implode("><",$keep).">");
+            $allowedTags = implode(array_values($keep), "|");
+            $regExp = '@<(' . $allowedTags . ')[^>]*?>(.*?)<\/\1>@i';
+            $htmlString = preg_replace_callback($regExp, $tempFunc, $htmlString);
 
-        return $strippedHtml;
+            $htmlString = strip_tags($htmlString, "<" . implode("><", $keep) . ">");
+        }
+        /* preserve injected variable cast type (string|array) when returning processed entity */
+        return is_array($html) ? $htmls : array_pop($htmls);
     }
 }
