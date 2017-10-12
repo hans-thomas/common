@@ -5,6 +5,39 @@ namespace Epubli\Common\Tools;
 class StringTools
 {
     /**
+     * parses a text for template vars and replaces all occurrences
+     * with the respective values from the given data array resource
+     *
+     * usage example:
+     *
+     * StringTools::templateVars('this is an example text with a $placeholders.one',["placeholder"=>["one"=>"1"]]);
+     *
+     * @param $text
+     * @param $data
+     */
+    public static function templateVars($text, $data) {
+        $getArrayNode = function ($path,$buf = null) use ($text, $data, &$getArrayNode) {
+            if (!isset($buf)) $buf = $data;
+            $seg = array_shift($path);
+            if (isset($buf[$seg])) {
+                if (is_array($buf[$seg])) {
+                    return $getArrayNode($path, $buf[$seg]);
+                } else {
+                    return $buf[$seg];
+                }
+            }
+            return (isset($buf[$seg])?$buf[$seg]:"");
+        };
+
+        preg_match_all('/\$([0-9a-zA-Z_\[\.\]]*)/is',$text,$matches);
+        foreach($matches[1] as &$match) {
+            //$match = 'data[\''.implode("']['",array_filter(preg_split('/[\]\[\.]+/is',$match))).'\']';
+            $match = $getArrayNode(array_filter(preg_split('/[\]\[\.]+/is',$match)));
+        }
+        $text = str_replace($matches[0],$matches[1],$text);
+        return $text;
+    }
+    /**
      * Replace only first occurrence of a substring.
      * @param string $search The substring to be replaced.
      * @param string $replace The replacement string.
