@@ -28,11 +28,13 @@ class StringTools
             }
             return (isset($buf[$seg])?$buf[$seg]:"");
         };
-
         preg_match_all('/\$([0-9a-zA-Z_\[\.\]]*)/is',$text,$matches);
+        arsort($matches[0]);
         foreach($matches[1] as &$match) {
-            //$match = 'data[\''.implode("']['",array_filter(preg_split('/[\]\[\.]+/is',$match))).'\']';
             $match = $getArrayNode(array_filter(preg_split('/[\]\[\.]+/is',$match)));
+        }
+        foreach($matches[0] as $key=>$value) {
+            $text = str_replace($value,$matches[1][$key],$text);
         }
         $text = str_replace($matches[0],$matches[1],$text);
         return $text;
