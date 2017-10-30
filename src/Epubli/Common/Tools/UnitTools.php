@@ -46,7 +46,7 @@ class UnitTools
     {
         $dimensions = [
             "short" => ["B", "KB", "MB", "GB", "TB", "PB"],
-            "long" => ["Bytes", "Kilobyte", "Megabyte", "Terabyte", "Pentabyte"]
+            "long" => ["Bytes", "Kilobyte", "Megabyte", "Gigabyte", "Terabyte", "Pentabyte"]
         ];
         $factor = 1024;
         $dim = 0;
