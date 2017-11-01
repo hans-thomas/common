@@ -15,8 +15,9 @@ class StringTools
      * @param $text
      * @param $data
      */
-    public static function templateVars($text, $data) {
-        $getArrayNode = function ($path,$buf = null) use ($text, $data, &$getArrayNode) {
+    public static function templateVars($text, $data)
+    {
+        $getArrayNode = function ($path, $buf = null) use ($text, $data, &$getArrayNode) {
             if (!isset($buf)) $buf = $data;
             $seg = array_shift($path);
             if (isset($buf[$seg])) {
@@ -26,19 +27,20 @@ class StringTools
                     return $buf[$seg];
                 }
             }
-            return (isset($buf[$seg])?$buf[$seg]:"");
+            return (isset($buf[$seg]) ? $buf[$seg] : "");
         };
-        preg_match_all('/\$([0-9a-zA-Z_\[\.\]]*)/is',$text,$matches);
+        preg_match_all('/\$([0-9a-zA-Z_\[\.\]]*)/is', $text, $matches);
         arsort($matches[0]);
-        foreach($matches[1] as &$match) {
-            $match = $getArrayNode(array_filter(preg_split('/[\]\[\.]+/is',$match)));
+        foreach ($matches[1] as &$match) {
+            $match = $getArrayNode(array_filter(preg_split('/[\]\[\.]+/is', $match)));
         }
-        foreach($matches[0] as $key=>$value) {
-            $text = str_replace($value,$matches[1][$key],$text);
+        foreach ($matches[0] as $key => $value) {
+            $text = str_replace($value, $matches[1][$key], $text);
         }
-        $text = str_replace($matches[0],$matches[1],$text);
+        $text = str_replace($matches[0], $matches[1], $text);
         return $text;
     }
+
     /**
      * Replace only first occurrence of a substring.
      * @param string $search The substring to be replaced.
@@ -55,7 +57,6 @@ class StringTools
     /**
      * Strip non-ascii characters
      * @see http://stackoverflow.com/questions/8781911/remove-non-ascii-characters-from-string-in-php#answer-8781968
-
      * @param $text string with non-ascii characters
      * @return string with non-ascii characters replaced by underscores
      */
@@ -65,7 +66,7 @@ class StringTools
     }
 
     /**
-     * Determine whether one string starts with another. 
+     * Determine whether one string starts with another.
      * @param string $haystack String to examine.
      * @param string $needle String to find.
      * @return bool Whether $haystack starts with $needle.

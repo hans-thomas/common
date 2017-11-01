@@ -18,7 +18,8 @@ class DateTools
      * @param \DateTime|int|null $date
      * @return \DateTime|int
      */
-    public static function dateAdd($period, $date = null) {
+    public static function dateAdd($period, $date = null)
+    {
         if (!isset($date)) {
             /**
              * @var \DateTime
@@ -28,11 +29,11 @@ class DateTools
 
         if (is_numeric($period)) {
             $date = new \DateTime();
-            $date->setTimestamp($date->getTimestamp()+$period);
+            $date->setTimestamp($date->getTimestamp() + $period);
         } else if (isset($period) && $period) {
-            $codeInterval = 'P'.str_replace(['+','-'],'',strtoupper($period));
+            $codeInterval = 'P' . str_replace(['+', '-'], '', strtoupper($period));
             $interval = new \DateInterval($codeInterval);
-            if ($period{0}=="-") {
+            if ($period{0} == "-") {
                 $date->sub($interval);
             } else {
                 $date->add($interval);
