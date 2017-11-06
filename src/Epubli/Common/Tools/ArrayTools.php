@@ -17,7 +17,7 @@ class ArrayTools
     public static $sortKey;
     public static $sortOptions;
 
-    public static function distinctMerge(array &$array1, array &$array2)
+    public static function distinctMerge(array $array1, array $array2)
     {
         $merged = $array1;
         foreach ($array2 as $key => &$value) {
@@ -43,7 +43,11 @@ class ArrayTools
     {
         $group = array_pop($keys);
         if ($group) {
-            self::recursive($source, $target[$source[$group]], $keys, $deep);
+            if (is_array($source)) {
+                self::recursive($source, $target[$source[$group]], $keys, $deep);
+            } else {
+                self::recursive($source, $target[$source->$group], $keys, $deep);
+            }
         } else {
             if ($deep) {
                 $target[] = $source;
@@ -78,7 +82,6 @@ class ArrayTools
                 }
             }
         }
-
         return $out;
     }
 
