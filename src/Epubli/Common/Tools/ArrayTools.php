@@ -260,7 +260,7 @@ class ArrayTools
      * @param array|string $values
      * @return array
      */
-    public static function extractValues(&$array, $key, $values = null)
+    public static function extractValues($array, $key, $values = null)
     {
         if (is_null($values)) {
             /* if $values is empty, return only a flat array with values */
