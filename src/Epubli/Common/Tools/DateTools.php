@@ -9,6 +9,10 @@ namespace Epubli\Common\Tools;
  */
 class DateTools
 {
+    /**
+     * @param $date
+     * @return bool
+     */
     public static function validateDate($date)
     {
         if ($date instanceof \DateTime) {
@@ -18,6 +22,27 @@ class DateTools
             return !empty($m);
         }
         return false;
+    }
+
+    /**
+     * @param string $interval
+     * @return \DateInterval|null
+     */
+    public static function createDateInterval($interval)
+    {
+        /**
+         * @var \DateInterval $dateInterval
+         */
+        $dateInterval = null;
+        if ($interval) {
+            $invert = $interval{0} == '-';
+            $interval = str_replace(['+', '-'], '', $interval);
+            $dateInterval = new \DateInterval('P' . strtoupper($interval));
+            if ($invert) {
+                $dateInterval->invert = 1;
+            }
+        }
+        return $dateInterval;
     }
     /**
      * adds or subtracts a time span to or from a given date
