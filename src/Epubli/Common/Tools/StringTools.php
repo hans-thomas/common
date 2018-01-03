@@ -15,9 +15,9 @@ class StringTools
      * @param $text
      * @param $data
      */
-    public static function templateVars($text, $data)
+    public static function templateVars($text, $data, $prefix = '\$', $suffix = '')
     {
-        $getArrayNode = function ($path, $buf = null) use ($text, $data, &$getArrayNode) {
+        $getArrayNode = function ($path, $buf = null) use ($data, &$getArrayNode) {
             if (!isset($buf)) $buf = $data;
             $seg = array_shift($path);
             if (isset($buf[$seg])) {
@@ -29,10 +29,12 @@ class StringTools
             }
             return (isset($buf[$seg]) ? $buf[$seg] : "");
         };
-        preg_match_all('/\$([0-9a-zA-Z_\[\.\]]*)/is', $text, $matches);
+        $pattern = '/'.$prefix.'([0-9a-zA-Z_\[\.\]]*)'.$suffix.'/is';
+        preg_match_all($pattern, $text, $matches);
         arsort($matches[0]);
         foreach ($matches[1] as &$match) {
-            $match = $getArrayNode(array_filter(preg_split('/[\]\[\.]+/is', $match)));
+            $split = preg_split('/[\]\[\.]+/is', $match);
+            $match = $getArrayNode(preg_split('/[\]\[\.]+/is', $match));
         }
         foreach ($matches[0] as $key => $value) {
             $text = str_replace($value, $matches[1][$key], $text);

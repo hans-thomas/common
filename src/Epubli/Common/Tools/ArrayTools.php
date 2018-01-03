@@ -336,7 +336,9 @@ class ArrayTools
             }
             if (is_array($firstRow) && !empty($firstRow)) {
                 foreach ($firstRow as $field) {
-                    $csvOutput .= $field . $delimiter;
+                    if (is_string($field)) {
+                        $csvOutput .= $field . $delimiter;
+                    }
                 }
                 $csvOutput = substr($csvOutput, 0, -1) . $terminator;
             }
@@ -346,9 +348,11 @@ class ArrayTools
                 $fields = [$row, $fields];
             }
             foreach ($fields as $value) {
-                if (is_numeric($value)) {
+                if ($value instanceof \DateTime || $value instanceOf \Date) {
+                    $csvOutput .= $value->format('Y-m-d H:i:s');
+                } elseif (is_numeric($value)) {
                     $csvOutput .= $value . $delimiter;
-                } else {
+                } elseif (is_string($value)) {
                     $csvOutput .= $enclosure . $value . $enclosure . $delimiter;
                 }
             }
@@ -396,13 +400,16 @@ class ArrayTools
             }
             foreach ($data as $key => $value) {
                 $textOut .= str_repeat($indentation, $indent);
-                if (is_array($value)) {
+                if (is_array($value) || is_object($value)) {
                     if (!isset($indentationLimit) || $indent <= $indentationLimit) {
                         $textOut .= "$key :" . $terminator . $temp($value, $indent + 1);
                     } else {
                         $textOut .= "$key : " . $ellipsis . $terminator;
                     }
                 } else {
+                    if ($value instanceof \DateTime || $value instanceof \Date) {
+                        $value = $value->format('Y-m-d H:i:s');
+                    }
                     if (isset($textLengthLimit) && (strlen($value) > $textLengthLimit)) {
                         $value = substr($value, 0,
                                 $textLengthLimitStart) . $ellipsis . ($textLengthLimitEnd > 0 ? substr($value,
