@@ -6,7 +6,7 @@ use Iterator;
 use Exception;
 
 /**
- * Derived from old stack: class Epubli_Tools_Range
+ * Derived from Mordor: class Epubli_Tools_Range
  *
  * Stores a set of non-negative integers.
  * Can load from and store to a normalized string representation like "1,5,7-19".

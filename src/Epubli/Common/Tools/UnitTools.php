@@ -9,6 +9,29 @@ namespace Epubli\Common\Tools;
  */
 class UnitTools
 {
+    const MM_PER_INCH = 25.4;
+    const PT_PER_INCH = 72;
+
+    /**
+     * Convert millimeters to DTP points.
+     * @param float $mmValue value in millimeters
+     * @return float value in DTP points
+     */
+    public static function mmToPt($mmValue)
+    {
+        return $mmValue / self::MM_PER_INCH * self::PT_PER_INCH;
+    }
+
+    /**
+     * Convert DTP points to millimeters.
+     * @param float $ptValue value in DTP points
+     * @return float value in millimeters
+     */
+    public static function ptToMm($ptValue)
+    {
+        return $ptValue / self::PT_PER_INCH * self::MM_PER_INCH;
+    }
+
     /**
      * Returns a human readable representation of elapsed time durations
      * @param $value
