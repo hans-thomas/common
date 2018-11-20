@@ -112,8 +112,22 @@ class StringTools
      */
     public static function splitIntoWords($text)
     {
-        // Prefix any sequence of capital letters with a space and replace any sequence of non-letters with one space.
-        $normalized = preg_replace(['/\p{Lu}+/u', '/\P{L}+/u'], [' \0', ' '], $text);
+        // Prefix any sequence of capital letters with a space,
+        // surround numbers with spaces,
+        // and replace any sequence of non-letters with one space.
+        $normalized = preg_replace(
+            [
+                '/\p{Lu}+/u',
+                '/\p{N}+/u',
+                '/[^\p{L}\p{N}]+/u',
+            ],
+            [
+                ' \0',
+                ' \0 ',
+                ' ',
+            ],
+            $text
+        );
 
         // Split into single words.
         return array_filter(explode(' ', $normalized));
@@ -160,13 +174,9 @@ class StringTools
     public static function toCamelCase($text, $lower = false)
     {
         $words = self::splitIntoWords($text);
-        $titleCasedWords = array_map(
-            function ($word, $lower = false) {
-                return mb_convert_case($word, $lower ? MB_CASE_LOWER : MB_CASE_TITLE);
-            },
-            $words,
-            [$lower]
-        );
+        $titleCasedWords = array_map(function ($word, $lower = false) {
+            return mb_convert_case($word, $lower ? MB_CASE_LOWER : MB_CASE_TITLE);
+        }, $words, [$lower]);
 
         return implode('', $titleCasedWords);
     }
@@ -189,21 +199,5 @@ class StringTools
     public static function toUpperCamelCase($text)
     {
         return self::toCamelCase($text, false);
-    }
-
-    /**
-     * @deprecated: Use UnitTools::humanReadableSeconds instead.
-     */
-    public static function humanReadableSeconds($value, $digits = 2, $fullName = false)
-    {
-        return UnitTools::humanReadableSeconds($value, $digits, $fullName);
-    }
-
-    /**
-     * @deprecated: Use UnitTools::humanReadableBytes instead.
-     */
-    public static function humanReadableBytes($value, $digits = 2, $fullName = false)
-    {
-        return UnitTools::humanReadableBytes($value, $digits, $fullName);
     }
 }
