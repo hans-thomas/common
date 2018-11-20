@@ -18,7 +18,9 @@ class StringTools
     public static function templateVars($text, $data, $prefix = '\$', $suffix = '')
     {
         $getArrayNode = function ($path, $buf = null) use ($data, &$getArrayNode) {
-            if (!isset($buf)) $buf = $data;
+            if (!isset($buf)) {
+                $buf = $data;
+            }
             $seg = array_shift($path);
             if (isset($buf[$seg])) {
                 if (is_array($buf[$seg])) {
@@ -27,9 +29,10 @@ class StringTools
                     return $buf[$seg];
                 }
             }
+
             return (isset($buf[$seg]) ? $buf[$seg] : "");
         };
-        $pattern = '/'.$prefix.'([0-9a-zA-Z_\[\.\]]*)'.$suffix.'/is';
+        $pattern = '/' . $prefix . '([0-9a-zA-Z_\[\.\]]*)' . $suffix . '/is';
         preg_match_all($pattern, $text, $matches);
         arsort($matches[0]);
         foreach ($matches[1] as &$match) {
@@ -40,6 +43,7 @@ class StringTools
             $text = str_replace($value, $matches[1][$key], $text);
         }
         $text = str_replace($matches[0], $matches[1], $text);
+
         return $text;
     }
 
@@ -53,6 +57,7 @@ class StringTools
     public static function replaceFirstOccurrence($search, $replace, $subject)
     {
         $pos = strpos($subject, $search);
+
         return $pos === false ? $subject : substr_replace($subject, $replace, $pos, strlen($search));
     }
 
@@ -155,9 +160,13 @@ class StringTools
     public static function toCamelCase($text, $lower = false)
     {
         $words = self::splitIntoWords($text);
-        $titleCasedWords = array_map(function ($word, $lower = false) {
-            return mb_convert_case($word, $lower ? MB_CASE_LOWER : MB_CASE_TITLE);
-        }, $words, [$lower]);
+        $titleCasedWords = array_map(
+            function ($word, $lower = false) {
+                return mb_convert_case($word, $lower ? MB_CASE_LOWER : MB_CASE_TITLE);
+            },
+            $words,
+            [$lower]
+        );
 
         return implode('', $titleCasedWords);
     }

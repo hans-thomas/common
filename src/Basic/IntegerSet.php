@@ -6,16 +6,12 @@ use Iterator;
 use Exception;
 
 /**
- * Derived from Mordor: class Epubli_Tools_Range
- *
  * Stores a set of non-negative integers.
  * Can load from and store to a normalized string representation like "1,5,7-19".
  *
  * The parsing is very simple and tolerant. ',' and '-' are considered separators
  * (hence no negative numbers are allowed). Anything else is evaluated as an integer.
  * Exceptions are only thrown when trying to insert negative numbers.
- *
- * @SuppressWarnings(PHPMD.TooManyMethods)
  */
 class IntegerSet implements Iterator
 {

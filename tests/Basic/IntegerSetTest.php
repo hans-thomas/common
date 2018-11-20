@@ -1,11 +1,10 @@
 <?php
 
-namespace Epubli\Common\Tests\Basic;
+namespace Epubli\Common\Basic;
 
-use Epubli\Common\Basic\IntegerSet;
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 
-class IntegerSetTest extends PHPUnit_Framework_TestCase
+class IntegerSetTest extends TestCase
 {
     public function testDefault()
     {

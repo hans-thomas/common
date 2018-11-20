@@ -13,9 +13,21 @@ use MabeEnum\Enum;
 class InternetMediaType extends Enum
 {
     const EPUB = 'application/epub+zip';
+    const JSON = 'application/json';
     const PDF = 'application/pdf';
-    const MD = 'text/markdown';
     const XHTML = 'application/xhtml+xml';
+
+    const GIF = 'image/gif';
+    const JPEG = 'image/jpeg';
+    const PNG = 'image/png';
+
+    const CSS = 'text/css';
+    const HTML = 'text/html';
+    const MD = 'text/markdown';
+    const TXT = 'text/plain';
+
+    // Unregistered types (x prefix)
+    const NCX = 'application/x-dtbncx+xml';
 
     public function __toString()
     {

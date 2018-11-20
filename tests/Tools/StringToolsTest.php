@@ -1,11 +1,10 @@
 <?php
 
-namespace Epubli\Common\Tests\Tools;
+namespace Epubli\Common\Tools;
 
-use Epubli\Common\Tools\StringTools;
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 
-class StringToolsTest extends PHPUnit_Framework_TestCase
+class StringToolsTest extends TestCase
 {
     /**
      * @param string $search The substring to be replaced.

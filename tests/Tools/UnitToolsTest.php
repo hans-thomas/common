@@ -1,12 +1,10 @@
 <?php
 
-namespace Epubli\Common\Tests\Tools;
+namespace Epubli\Common\Tools;
 
-use Epubli\Common\Tools\StringTools;
-use Epubli\Common\Tools\UnitTools;
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 
-class UnitToolsTest extends PHPUnit_Framework_TestCase
+class UnitToolsTest extends TestCase
 {
     /**
      * @param float $mm value in mm

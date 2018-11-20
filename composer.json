@@ -1,24 +1,34 @@
 {
-  "name": "epubli/common",
-  "type": "library",
-  "description": "Collection of commonly used classes.",
-  "keywords": ["Epubli", "PHP", "common code", "helpers", "tools", "utilities"],
-  "homepage": "https://bitbucket.org/epubli/common",
-  "license": "proprietary",
-  "authors": [
-    {
-      "name": "Epubli developers",
-      "email": "devs@epubli.com"
+    "name": "epubli/common",
+    "type": "library",
+    "description": "Collection of commonly used classes.",
+    "keywords": [
+        "Epubli",
+        "PHP",
+        "common code",
+        "helpers",
+        "tools",
+        "utilities"
+    ],
+    "homepage": "https://github.com/epubli/common",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Epubli Developers",
+            "email": "devs@epubli.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.4.0",
+        "marc-mabe/php-enum": "^2.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Epubli\\Common\\": "src/",
+            "Epubli\\Exception\\": "exception/"
+        }
+    },
+    "require-dev": {
+        "phpunit/phpunit": ">=5.0"
     }
-  ],
-  "require": {
-    "php": ">=5.4.0",
-    "marc-mabe/php-enum": "^2.0"
-  },
-  "autoload": {
-    "psr-0": {
-      "Epubli\\Common": "src/",
-      "Epubli\\Exception": "src/"
-    }
-  }
 }

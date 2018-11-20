@@ -12,11 +12,11 @@ In your [composer](https://getcomposer.org/).json include the following:
     "repositories": [
         {
             "type": "vcs",
-            "url": "git@bitbucket.org:epubli/common.git"
+            "url": "https://github.com/epubli/common.git"
         }
     ]
     "require": {
-        "epubli/common": "master@dev"
+        "epubli/common": "dev-master"
     }
 }
 ```

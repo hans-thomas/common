@@ -2,7 +2,7 @@
 
 namespace Epubli\Common\Tools;
 
-class HTMLTools
+class HtmlTools
 {
     /**
      * @param $html
