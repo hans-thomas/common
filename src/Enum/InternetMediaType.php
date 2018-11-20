@@ -2,13 +2,27 @@
 
 namespace Epubli\Common\Enum;
 
-use MabeEnum\Enum;
+use Epubli\Common\Basic\Enum;
 
 /**
  * Internet media type
  * See https://en.wikipedia.org/wiki/Internet_media_type
+ * This enumeration is obviously not exhaustive. It will never be. Types are added when needed.
  *
  * @author Simon Schrape <s.schrape@epubli.com>
+ *
+ * @method static InternetMediaType EPUB()
+ * @method static InternetMediaType JSON()
+ * @method static InternetMediaType PDF()
+ * @method static InternetMediaType XHTML()
+ * @method static InternetMediaType GIF()
+ * @method static InternetMediaType JPEG()
+ * @method static InternetMediaType PNG()
+ * @method static InternetMediaType CSS()
+ * @method static InternetMediaType HTML()
+ * @method static InternetMediaType MD()
+ * @method static InternetMediaType TXT()
+ * @method static InternetMediaType NCX()
  */
 class InternetMediaType extends Enum
 {
@@ -28,9 +42,4 @@ class InternetMediaType extends Enum
 
     // Unregistered types (x prefix)
     const NCX = 'application/x-dtbncx+xml';
-
-    public function __toString()
-    {
-        return $this->getValue();
-    }
 }
