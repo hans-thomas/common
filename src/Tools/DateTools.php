@@ -9,6 +9,31 @@ namespace Epubli\Common\Tools;
  */
 class DateTools
 {
+    private static $months = [
+        'January' => 'Januar',
+        'February' => 'Februar',
+        'March' => 'März',
+        'April' => 'April',
+        'May' => 'Mai',
+        'June' => 'Juni',
+        'July' => 'Juli',
+        'August' => 'August',
+        'September' => 'September',
+        'October' => 'Oktober',
+        'November' => 'November',
+        'December' => 'Dezember'
+    ];
+
+    private static $weekdays = array(
+        'Monday' => 'Montag',
+        'Tuesday' => 'Dienstag',
+        'Wednesday' => 'Mittwoch',
+        'Thursday' => 'Donnerstag',
+        'Friday' => 'Freitag',
+        'Saturday' => 'Samstag',
+        'Sunday' => 'Sonntag',
+    );
+
     /**
      * @param $date
      * @return bool
@@ -17,8 +42,8 @@ class DateTools
     {
         if ($date instanceof \DateTime) {
             return true;
-        } else if (is_string($date)) {
-            preg_match('/[0-9]{4}-[0-9]{2}-[0-9]{2}/is',$date,$m);
+        } elseif (is_string($date)) {
+            preg_match('/[0-9]{4}-[0-9]{2}-[0-9]{2}/is', $date, $m);
             return !empty($m);
         }
         return false;
@@ -26,7 +51,9 @@ class DateTools
 
     /**
      * @param string $interval
+     *
      * @return \DateInterval|null
+     * @throws \Exception
      */
     public static function createDateInterval($interval)
     {
@@ -44,6 +71,7 @@ class DateTools
         }
         return $dateInterval;
     }
+
     /**
      * adds or subtracts a time span to or from a given date
      * syntax example (subtract 1 year, 2 months, 10 days, 5 hours, 50 minutes and 30 seconds from the current datetime):
@@ -51,7 +79,9 @@ class DateTools
      *
      * @param $period
      * @param \DateTime|int|null $date
+     *
      * @return \DateTime|int
+     * @throws \Exception
      */
     public static function dateAdd($period, $date = null)
     {
@@ -65,9 +95,9 @@ class DateTools
         if (is_numeric($period)) {
             $date = new \DateTime();
             $date->setTimestamp($date->getTimestamp() + $period);
-        } else if ($period instanceof \DateTime) {
+        } elseif ($period instanceof \DateTime) {
             return $period;
-        } else if (isset($period) && $period) {
+        } elseif (isset($period) && $period) {
             $codeInterval = 'P' . str_replace(['+', '-'], '', strtoupper($period));
             $interval = new \DateInterval($codeInterval);
             if ($period{0} == "-") {
@@ -80,4 +110,35 @@ class DateTools
         return $date;
     }
 
+    /**
+     * Accepts a string, returns a string with translated months and weekdays to German.
+     *
+     * @param $string
+     *
+     * @return string
+     */
+    public static function translateMonthsWeekdaysToGerman($string)
+    {
+        function to3Chars($str)
+        {
+            return substr($str, 0, 3);
+        }
+        return str_replace(
+            array_map('to3Chars', array_keys(self::$weekdays)),
+            array_map('to3Chars', self::$weekdays),
+            str_replace(
+                array_map('to3Chars', array_keys(self::$months)),
+                array_map('to3Chars', self::$months),
+                str_replace(
+                    array_keys(self::$months),
+                    self::$months,
+                    str_replace(
+                        array_keys(self::$weekdays),
+                        self::$weekdays,
+                        $string
+                    )
+                )
+            )
+        );
+    }
 }
