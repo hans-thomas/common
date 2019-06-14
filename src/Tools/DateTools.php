@@ -119,16 +119,12 @@ class DateTools
      */
     public static function translateMonthsWeekdaysToGerman($string)
     {
-        function to3Chars($str)
-        {
-            return substr($str, 0, 3);
-        }
         return str_replace(
-            array_map('to3Chars', array_keys(self::$weekdays)),
-            array_map('to3Chars', self::$weekdays),
+            array_map([__CLASS__, 'to3Chars'], array_keys(self::$weekdays)),
+            array_map([__CLASS__, 'to3Chars'], self::$weekdays),
             str_replace(
-                array_map('to3Chars', array_keys(self::$months)),
-                array_map('to3Chars', self::$months),
+                array_map([__CLASS__, 'to3Chars'], array_keys(self::$months)),
+                array_map([__CLASS__, 'to3Chars'], self::$months),
                 str_replace(
                     array_keys(self::$months),
                     self::$months,
@@ -140,5 +136,17 @@ class DateTools
                 )
             )
         );
+    }
+
+    /**
+     * Returns the 3 first chars of a string
+     *
+     * @param $str
+     *
+     * @return bool|string
+     */
+    private static function to3Chars($str)
+    {
+        return substr($str, 0, 3);
     }
 }
