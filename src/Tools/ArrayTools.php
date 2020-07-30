@@ -102,9 +102,9 @@ class ArrayTools
         self::transform($a, $b, self::$sortOptions);
         if (self::$sortOptions & self::SORT_NATURAL) {
             return (strnatcmp($a, $b));
-        } else {
-            return ($a == $b) ? 0 : ($a < $b) ? -1 : 1;
         }
+
+        return ($a == $b) ? 0 : (($a < $b) ? -1 : 1);
     }
 
     /**
