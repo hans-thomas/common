@@ -103,7 +103,7 @@ class ArrayTools
         if (self::$sortOptions & self::SORT_NATURAL) {
             return (strnatcmp($a, $b));
         }
-        if ( $a == $b) {
+        if ($a === $b) {
             return 0;
         }
         if ($a < $b) {
@@ -254,7 +254,7 @@ class ArrayTools
             if ($sortOptions & self::SORT_NATURAL) {
                 return (strnatcmp($a, $b));
             }
-            if ($a == $b) {
+            if ($a === $b) {
                 return (0);
             }
             if ($a < $b) {
