@@ -251,13 +251,13 @@ class ArrayTools
             $b = $cmp_b[$sortKey];
             self::transform($a, $b, $sortOptions);
 
-            if (($sortOptions & self::SORT_NATURAL)) {
+            if ($sortOptions & self::SORT_NATURAL) {
                 return (strnatcmp($a, $b));
             }
-            if (($a == $b)) {
+            if ($a == $b) {
                 return (0);
             }
-            if (($a < $b)) {
+            if ($a < $b) {
                 return -1;
             }
             return 1;
